@@ -191,7 +191,7 @@
  * Maximum supported ATT_MTU size
  * This parameter is ignored by the CPU2 when CFG_BLE_OPTIONS is set to 1"
  */
-#define CFG_BLE_MAX_ATT_MTU             (52)
+#define CFG_BLE_MAX_ATT_MTU             (252)
 
 /**
  * Size of the storage area for Attribute values
@@ -204,7 +204,7 @@
  *  The total amount of memory needed is the sum of the above quantities for each attribute.
  * This parameter is ignored by the CPU2 when CFG_BLE_OPTIONS is set to 1"
  */
-#define CFG_BLE_ATT_VALUE_ARRAY_SIZE    (1344)
+#define CFG_BLE_ATT_VALUE_ARRAY_SIZE    (1600)
 
 /**
  * Prepare Write List size in terms of number of packet
