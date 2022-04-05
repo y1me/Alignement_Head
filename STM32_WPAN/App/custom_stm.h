@@ -35,14 +35,24 @@ extern "C" {
 typedef enum
 {
   /* ALIGN_HEAD */
-  CUSTOM_STM_SD,
+  CUSTOM_STM_D_S,
+  CUSTOM_STM_L_B,
+  CUSTOM_STM_B_D,
+  CUSTOM_STM_D_C,
 } Custom_STM_Char_Opcode_t;
 
 typedef enum
 {
-  /* sensor_data */
-  CUSTOM_STM_SD_READ_EVT,
-  CUSTOM_STM_SD_WRITE_EVT,
+  /* Data_Sensor */
+  CUSTOM_STM_D_S_READ_EVT,
+  /* Led_Button */
+  CUSTOM_STM_L_B_READ_EVT,
+  CUSTOM_STM_L_B_WRITE_EVT,
+  /* Battery_Data */
+  CUSTOM_STM_B_D_READ_EVT,
+  /* Data_Calib */
+  CUSTOM_STM_D_C_READ_EVT,
+  CUSTOM_STM_D_C_WRITE_EVT,
 
   CUSTOM_STM_BOOT_REQUEST_EVT
 } Custom_STM_Opcode_evt_t;

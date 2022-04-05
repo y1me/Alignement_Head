@@ -96,16 +96,40 @@ void Custom_STM_App_Notification(Custom_STM_App_Notification_evt_t *pNotificatio
     /* USER CODE END CUSTOM_STM_App_Notification_Custom_Evt_Opcode */
 
   /* ALIGN_HEAD */
-    case CUSTOM_STM_SD_READ_EVT:
-      /* USER CODE BEGIN CUSTOM_STM_SD_READ_EVT */
+    case CUSTOM_STM_D_S_READ_EVT:
+      /* USER CODE BEGIN CUSTOM_STM_D_S_READ_EVT */
 
-      /* USER CODE END CUSTOM_STM_SD_READ_EVT */
+      /* USER CODE END CUSTOM_STM_D_S_READ_EVT */
       break;
 
-    case CUSTOM_STM_SD_WRITE_EVT:
-      /* USER CODE BEGIN CUSTOM_STM_SD_WRITE_EVT */
+    case CUSTOM_STM_L_B_READ_EVT:
+      /* USER CODE BEGIN CUSTOM_STM_L_B_READ_EVT */
 
-      /* USER CODE END CUSTOM_STM_SD_WRITE_EVT */
+      /* USER CODE END CUSTOM_STM_L_B_READ_EVT */
+      break;
+
+    case CUSTOM_STM_L_B_WRITE_EVT:
+      /* USER CODE BEGIN CUSTOM_STM_L_B_WRITE_EVT */
+
+      /* USER CODE END CUSTOM_STM_L_B_WRITE_EVT */
+      break;
+
+    case CUSTOM_STM_B_D_READ_EVT:
+      /* USER CODE BEGIN CUSTOM_STM_B_D_READ_EVT */
+
+      /* USER CODE END CUSTOM_STM_B_D_READ_EVT */
+      break;
+
+    case CUSTOM_STM_D_C_READ_EVT:
+      /* USER CODE BEGIN CUSTOM_STM_D_C_READ_EVT */
+
+      /* USER CODE END CUSTOM_STM_D_C_READ_EVT */
+      break;
+
+    case CUSTOM_STM_D_C_WRITE_EVT:
+      /* USER CODE BEGIN CUSTOM_STM_D_C_WRITE_EVT */
+
+      /* USER CODE END CUSTOM_STM_D_C_WRITE_EVT */
       break;
 
     default:
