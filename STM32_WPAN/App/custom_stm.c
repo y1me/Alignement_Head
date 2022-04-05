@@ -28,7 +28,7 @@
 
 /* Private typedef -----------------------------------------------------------*/
 typedef struct{
-  uint16_t  CustomAhHdle;                    /**< 01_align_head handle */
+  uint16_t  CustomA_HHdle;                    /**< ALIGN_HEAD handle */
   uint16_t  CustomSdHdle;                  /**< sensor_data handle */
 }CustomContext_t;
 
@@ -103,7 +103,7 @@ do {\
  D973F2E1-B19E-11E2-9E96-0800200C9A66: Characteristic_1 128bits UUID
  D973F2E2-B19E-11E2-9E96-0800200C9A66: Characteristic_2 128bits UUID
  */
-#define COPY_01_ALIGN_HEAD_UUID(uuid_struct)          COPY_UUID_128(uuid_struct,0x00,0x00,0x13,0x42,0xcc,0x7a,0x48,0x2a,0x98,0x4a,0x7f,0x2e,0xd5,0xb3,0xe5,0x8f)
+#define COPY_ALIGN_HEAD_UUID(uuid_struct)          COPY_UUID_128(uuid_struct,0x00,0x00,0x13,0x42,0xcc,0x7a,0x48,0x2a,0x98,0x4a,0x7f,0x2e,0xd5,0xb3,0xe5,0x8f)
 #define COPY_SENSOR_DATA_UUID(uuid_struct)    COPY_UUID_128(uuid_struct,0x00,0x00,0x00,0x00,0x8e,0x22,0x45,0x41,0x9d,0x4c,0x21,0xed,0xae,0x82,0xed,0x19)
 
 /* USER CODE BEGIN PF */
@@ -246,27 +246,27 @@ void SVCCTL_InitCustomSvc(void)
   SVCCTL_RegisterSvcHandler(Custom_STM_Event_Handler);
 
   /*
-   *          01_align_head
+   *          ALIGN_HEAD
    *
    * Max_Attribute_Records = 1 + 2*1 + 1*no_of_char_with_notify_or_indicate_property + 1*no_of_char_with_broadcast_property
-   * service_max_attribute_record = 1 for 01_align_head +
+   * service_max_attribute_record = 1 for ALIGN_HEAD +
    *                                2 for sensor_data +
    *                                1 for sensor_data broadcast property +
    *                              = 4
    */
 
-  COPY_01_ALIGN_HEAD_UUID(uuid.Char_UUID_128);
+  COPY_ALIGN_HEAD_UUID(uuid.Char_UUID_128);
   aci_gatt_add_service(UUID_TYPE_128,
                        (Service_UUID_t *) &uuid,
                        PRIMARY_SERVICE,
                        4,
-                       &(CustomContext.CustomAhHdle));
+                       &(CustomContext.CustomA_HHdle));
 
   /**
    *  sensor_data
    */
   COPY_SENSOR_DATA_UUID(uuid.Char_UUID_128);
-  aci_gatt_add_char(CustomContext.CustomAhHdle,
+  aci_gatt_add_char(CustomContext.CustomA_HHdle,
                     UUID_TYPE_128, &uuid,
                     SizeSd,
                     CHAR_PROP_BROADCAST | CHAR_PROP_READ | CHAR_PROP_WRITE,
@@ -300,7 +300,7 @@ tBleStatus Custom_STM_App_Update_Char(Custom_STM_Char_Opcode_t CharOpcode, uint8
   {
 
     case CUSTOM_STM_SD:
-      result = aci_gatt_update_char_value(CustomContext.CustomAhHdle,
+      result = aci_gatt_update_char_value(CustomContext.CustomA_HHdle,
                                           CustomContext.CustomSdHdle,
                                           0, /* charValOffset */
                                           SizeSd, /* charValueLen */

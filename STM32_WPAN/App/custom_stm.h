@@ -34,7 +34,7 @@ extern "C" {
 /* Exported types ------------------------------------------------------------*/
 typedef enum
 {
-  /* 01_align_head */
+  /* ALIGN_HEAD */
   CUSTOM_STM_SD,
 } Custom_STM_Char_Opcode_t;
 

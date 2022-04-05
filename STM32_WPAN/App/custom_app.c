@@ -35,7 +35,7 @@
 /* Private typedef -----------------------------------------------------------*/
 typedef struct
 {
-  /* 01_align_head */
+  /* ALIGN_HEAD */
   /* USER CODE BEGIN CUSTOM_APP_Context_t */
 
   /* USER CODE END CUSTOM_APP_Context_t */
@@ -77,7 +77,7 @@ uint8_t SecureReadData;
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
-  /* 01_align_head */
+  /* ALIGN_HEAD */
 
 /* USER CODE BEGIN PFP */
 
@@ -95,7 +95,7 @@ void Custom_STM_App_Notification(Custom_STM_App_Notification_evt_t *pNotificatio
 
     /* USER CODE END CUSTOM_STM_App_Notification_Custom_Evt_Opcode */
 
-  /* 01_align_head */
+  /* ALIGN_HEAD */
     case CUSTOM_STM_SD_READ_EVT:
       /* USER CODE BEGIN CUSTOM_STM_SD_READ_EVT */
 
@@ -175,7 +175,7 @@ void Custom_APP_Init(void)
  *
  *************************************************************/
 
-  /* 01_align_head */
+  /* ALIGN_HEAD */
 
 /* USER CODE BEGIN FD_LOCAL_FUNCTIONS*/
 

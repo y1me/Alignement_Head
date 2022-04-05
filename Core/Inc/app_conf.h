@@ -106,8 +106,8 @@
 /**
  * Device name configuration for Generic Access Service
  */
-#define CFG_GAP_DEVICE_NAME             "01AH"
-#define CFG_GAP_DEVICE_NAME_LENGTH      (4)
+#define CFG_GAP_DEVICE_NAME             "ALIGN_HEAD"
+#define CFG_GAP_DEVICE_NAME_LENGTH      (10)
 
 /**
  * Define PHY
