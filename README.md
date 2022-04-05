@@ -6,3 +6,5 @@ Characteristic 2 R/W : Led/Button
   6 bytes  
 Characteristic 3 R : Battery voltage/temp/charging state  
   10 bytes  
+Characteristic 4 R/W : Data calib  
+  16 bytes  
