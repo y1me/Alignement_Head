@@ -55,8 +55,8 @@
 /**
  * Define IO Authentication
  */
-#define CFG_BONDING_MODE                 (0)
-#define CFG_FIXED_PIN                    (111111)
+#define CFG_BONDING_MODE                 (1)
+#define CFG_FIXED_PIN                    (146352)
 #define CFG_USED_FIXED_PIN               (0)
 #define CFG_ENCRYPTION_KEY_SIZE_MAX      (16)
 #define CFG_ENCRYPTION_KEY_SIZE_MIN      (8)
@@ -87,7 +87,7 @@
 #define CFG_SECURE_OPTIONAL            (0x01)
 #define CFG_SECURE_MANDATORY           (0x02)
 
-#define CFG_SC_SUPPORT                 CFG_SECURE_OPTIONAL
+#define CFG_SC_SUPPORT                 CFG_SECURE_MANDATORY
 
 /**
  * Define Keypress Notification Support

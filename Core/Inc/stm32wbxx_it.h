@@ -32,7 +32,7 @@
 
 /* Exported types ------------------------------------------------------------*/
 /* USER CODE BEGIN ET */
-
+ typedef void (* const PFV_EXTI)(void);
 /* USER CODE END ET */
 
 /* Exported constants --------------------------------------------------------*/

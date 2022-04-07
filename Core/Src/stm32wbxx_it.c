@@ -58,6 +58,38 @@
 extern IPCC_HandleTypeDef hipcc;
 /* USER CODE BEGIN EV */
 
+/* Add following code in ext interupt handler
+ *
+ *	if (LL_EXTI_IsActiveFlag_0_31(LL_EXTI_LINE_4) != RESET)
+ *	{
+ *	  LL_EXTI_ClearFlag_0_31(LL_EXTI_LINE_4);
+ *			if (pf_ext_int[4]  != NULL)
+ *			{
+ *				(* pf_ext_int[4])();
+ *			}
+ *	}
+ *
+ */
+/* USER CODE BEGIN EXTI4_IRQn 1 */
+
+// add function address
+static PFV_EXTI pf_ext_int[]=
+		{
+				NULL,
+				NULL,
+				NULL,
+				NULL,
+				NULL,
+				NULL,//TOGGLE_GPIO_LED2,
+				NULL,
+				NULL,
+				NULL,
+				NULL,
+				NULL
+		};
+
+
+
 /* USER CODE END EV */
 
 /******************************************************************************/
