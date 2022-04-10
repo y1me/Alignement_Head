@@ -22,6 +22,9 @@
 #include "stm32wbxx_it.h"
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
+#include "gpio.h"
+#include "stddef.h"
+#include "types.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -41,7 +44,7 @@
 
 /* Private variables ---------------------------------------------------------*/
 /* USER CODE BEGIN PV */
-
+volatile uint32_t tick_ms = 0, tick_second = 0;
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -88,7 +91,11 @@ static PFV_EXTI pf_ext_int[]=
 				NULL
 		};
 
-
+static const TIMED_PERIOD timed_task[] =
+{
+    { 4,  TOGGLE_GPIO_TEST_PIN },
+    { 0, NULL }
+};
 
 /* USER CODE END EV */
 
@@ -216,6 +223,27 @@ void SysTick_Handler(void)
 {
   /* USER CODE BEGIN SysTick_IRQn 0 */
 
+	TOGGLE_GPIO_TEST_PIN();
+	//TIMED_PERIOD *ptr;
+	tick_ms++;
+
+	if (tick_ms == 1000)
+	{
+		tick_ms = 0;
+		tick_second++;
+	}
+
+	for (const TIMED_PERIOD *ptr = timed_task; ptr->interval != 0; ptr++)
+	{
+		if (!(tick_ms % ptr->interval))
+		{
+			/* Time to call the function */
+			(ptr->proc)();
+		}
+	}
+
+	TOGGLE_GPIO_TEST_PIN();
+
   /* USER CODE END SysTick_IRQn 0 */
   HAL_IncTick();
   /* USER CODE BEGIN SysTick_IRQn 1 */
@@ -255,7 +283,10 @@ void EXTI9_5_IRQHandler(void)
   {
     LL_EXTI_ClearFlag_0_31(LL_EXTI_LINE_5);
     /* USER CODE BEGIN LL_EXTI_LINE_5 */
-
+    if (pf_ext_int[5]  != NULL)
+    		{
+    			(* pf_ext_int[5])();
+    		}
     /* USER CODE END LL_EXTI_LINE_5 */
   }
   /* USER CODE BEGIN EXTI9_5_IRQn 1 */
