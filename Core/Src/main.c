@@ -19,6 +19,7 @@
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
 #include "ipcc.h"
+#include "lptim.h"
 #include "rf.h"
 #include "rtc.h"
 #include "gpio.h"
@@ -98,8 +99,9 @@ int main(void)
   MX_GPIO_Init();
   MX_RF_Init();
   MX_RTC_Init();
+  MX_LPTIM1_Init();
   /* USER CODE BEGIN 2 */
-
+  PWM_LPTIM1_Init();
   /* USER CODE END 2 */
 
   /* Init code for STM32_WPAN */
