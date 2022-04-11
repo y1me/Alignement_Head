@@ -217,10 +217,10 @@ uint8_t index_con_int, mutex;
 /**
  * Advertising Data
  */
-uint8_t ad_data[25] = {
+uint8_t ad_data[19] = {
     11, AD_TYPE_COMPLETE_LOCAL_NAME, 'A', 'L', 'I', 'G', 'N', '_', 'H', 'E', 'A', 'D',  /* Complete name */
 
-    12, AD_TYPE_MANUFACTURER_SPECIFIC_DATA, 0x30, 0x00, 0x00 /*  */, 0x00 /*  */, 0x00 /*  */, 0x00 /*  */, 0x00 /*  */, 0x00 /*  */, 0x00 /*  */, 0x00 /*  */, 0x00 /*  */,
+    6, AD_TYPE_MANUFACTURER_SPECIFIC_DATA, 0x30, 0x00, 0x00 /*  */, 0x00 /*  */, 0x00 /*  */,
 };
 
 /* USER CODE BEGIN PV */

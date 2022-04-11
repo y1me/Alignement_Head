@@ -65,7 +65,7 @@ typedef struct{
 static const uint8_t SizeD_S=16;
 static const uint8_t SizeL_B=6;
 static const uint8_t SizeB_D=10;
-static const uint8_t SizeD_C=1;
+static const uint8_t SizeD_C=16;
 /**
  * START of Section BLE_DRIVER_CONTEXT
  */
@@ -313,14 +313,15 @@ void SVCCTL_InitCustomSvc(void)
    *                                2 for Battery_Data +
    *                                2 for Data_Calib +
    *                                1 for Data_Sensor broadcast property +
-   *                              = 10
+   *                                1 for Data_Calib broadcast property +
+   *                              = 11
    */
 
   COPY_ALIGN_HEAD_UUID(uuid.Char_UUID_128);
   aci_gatt_add_service(UUID_TYPE_128,
                        (Service_UUID_t *) &uuid,
                        PRIMARY_SERVICE,
-                       10,
+                       11,
                        &(CustomContext.CustomA_HHdle));
 
   /**
@@ -331,7 +332,7 @@ void SVCCTL_InitCustomSvc(void)
                     UUID_TYPE_128, &uuid,
                     SizeD_S,
                     CHAR_PROP_BROADCAST | CHAR_PROP_READ,
-                    ATTR_PERMISSION_NONE,
+                    ATTR_PERMISSION_AUTHEN_READ | ATTR_PERMISSION_AUTHOR_READ | ATTR_PERMISSION_ENCRY_READ,
                     GATT_NOTIFY_ATTRIBUTE_WRITE | GATT_NOTIFY_WRITE_REQ_AND_WAIT_FOR_APPL_RESP | GATT_NOTIFY_READ_REQ_AND_WAIT_FOR_APPL_RESP,
                     0x10,
                     CHAR_VALUE_LEN_CONSTANT,
@@ -369,7 +370,7 @@ void SVCCTL_InitCustomSvc(void)
   aci_gatt_add_char(CustomContext.CustomA_HHdle,
                     UUID_TYPE_128, &uuid,
                     SizeD_C,
-                    CHAR_PROP_READ | CHAR_PROP_WRITE,
+                    CHAR_PROP_BROADCAST | CHAR_PROP_READ | CHAR_PROP_WRITE,
                     ATTR_PERMISSION_NONE,
                     GATT_NOTIFY_ATTRIBUTE_WRITE | GATT_NOTIFY_WRITE_REQ_AND_WAIT_FOR_APPL_RESP | GATT_NOTIFY_READ_REQ_AND_WAIT_FOR_APPL_RESP,
                     0x10,
