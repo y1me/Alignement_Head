@@ -44,7 +44,7 @@
 
 /* Private variables ---------------------------------------------------------*/
 /* USER CODE BEGIN PV */
-volatile uint32_t tick_ms = 0, tick_second = 0;
+volatile uint32_t tick_10us = 0, tick_ms = 0, tick_second = 0;
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -59,6 +59,7 @@ volatile uint32_t tick_ms = 0, tick_second = 0;
 
 /* External variables --------------------------------------------------------*/
 extern IPCC_HandleTypeDef hipcc;
+extern LPTIM_HandleTypeDef hlptim2;
 /* USER CODE BEGIN EV */
 
 /* Add following code in ext interupt handler
@@ -91,11 +92,24 @@ static PFV_EXTI pf_ext_int[]=
 				NULL
 		};
 
-static const TIMED_PERIOD timed_task[] =
+static const TIMED_PERIOD timed_task_second[] =
 {
-    { 4,  TOGGLE_GPIO_TEST_PIN },
+    { 1,  TOGGLE_GPIO_TEST_PIN },
     { 0, NULL }
 };
+
+static const TIMED_PERIOD timed_task_ms[] =
+{
+    //{ 4,  TOGGLE_GPIO_TEST_PIN },
+    { 0, NULL }
+};
+
+static const TIMED_PERIOD timed_task_10us[] =
+{
+    //{ 50,  TOGGLE_GPIO_TEST_PIN },
+    { 0, NULL }
+};
+
 
 /* USER CODE END EV */
 
@@ -223,7 +237,7 @@ void SysTick_Handler(void)
 {
   /* USER CODE BEGIN SysTick_IRQn 0 */
 
-	TOGGLE_GPIO_TEST_PIN();
+	//TOGGLE_GPIO_TEST_PIN();
 	//TIMED_PERIOD *ptr;
 	tick_ms++;
 
@@ -231,9 +245,23 @@ void SysTick_Handler(void)
 	{
 		tick_ms = 0;
 		tick_second++;
+
+		for (const TIMED_PERIOD *ptr = timed_task_second; ptr->interval != 0; ptr++)
+		{
+			if (!(tick_second % ptr->interval))
+			{
+				/* Time to call the function */
+				(ptr->proc)();
+			}
+		}
 	}
 
-	for (const TIMED_PERIOD *ptr = timed_task; ptr->interval != 0; ptr++)
+	if (tick_second == 60)
+	{
+		tick_second = 0;
+	}
+
+	for (const TIMED_PERIOD *ptr = timed_task_ms; ptr->interval != 0; ptr++)
 	{
 		if (!(tick_ms % ptr->interval))
 		{
@@ -242,7 +270,9 @@ void SysTick_Handler(void)
 		}
 	}
 
-	TOGGLE_GPIO_TEST_PIN();
+
+
+	//TOGGLE_GPIO_TEST_PIN();
 
   /* USER CODE END SysTick_IRQn 0 */
   HAL_IncTick();
@@ -334,6 +364,37 @@ void HSEM_IRQHandler(void)
   /* USER CODE BEGIN HSEM_IRQn 1 */
 
   /* USER CODE END HSEM_IRQn 1 */
+}
+
+/**
+  * @brief This function handles LPTIM2 global interrupt.
+  */
+void LPTIM2_IRQHandler(void)
+{
+  /* USER CODE BEGIN LPTIM2_IRQn 0 */
+
+  /* USER CODE END LPTIM2_IRQn 0 */
+  HAL_LPTIM_IRQHandler(&hlptim2);
+  /* USER CODE BEGIN LPTIM2_IRQn 1 */
+
+	//TOGGLE_GPIO_TEST_PIN();
+	//TIMED_PERIOD *ptr
+  tick_10us++;
+
+  if (tick_10us == 100)
+  {
+	  tick_10us = 0;
+  }
+
+  for (const TIMED_PERIOD *ptr = timed_task_10us; ptr->interval != 0; ptr++)
+  {
+	  if (!(tick_10us % ptr->interval))
+	  {
+		  /* Time to call the function */
+		  (ptr->proc)();
+	  }
+  }
+/* USER CODE END LPTIM2_IRQn 1 */
 }
 
 /* USER CODE BEGIN 1 */

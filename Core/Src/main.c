@@ -100,12 +100,15 @@ int main(void)
   MX_RF_Init();
   MX_RTC_Init();
   MX_LPTIM1_Init();
+  MX_LPTIM2_Init();
   /* USER CODE BEGIN 2 */
   PWM_LPTIM1_Init();
+  COUNT_LPTIM2_IT_Init();
   /* USER CODE END 2 */
 
   /* Init code for STM32_WPAN */
   MX_APPE_Init();
+
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
