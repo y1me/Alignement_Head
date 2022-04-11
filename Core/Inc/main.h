@@ -34,7 +34,6 @@ extern "C" {
 #include "app_entry.h"
 #include "app_common.h"
 
-//#include "stm32wbxx_ll_i2c.h"
 #include "stm32wbxx_ll_system.h"
 #include "stm32wbxx_ll_gpio.h"
 #include "stm32wbxx_ll_exti.h"
