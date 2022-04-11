@@ -18,6 +18,8 @@
 /* USER CODE END Header */
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
+#include "dma.h"
+#include "i2c.h"
 #include "ipcc.h"
 #include "lptim.h"
 #include "rf.h"
@@ -99,8 +101,10 @@ int main(void)
   MX_GPIO_Init();
   MX_RF_Init();
   MX_RTC_Init();
-  MX_LPTIM1_Init();
+  MX_DMA_Init();
   MX_LPTIM2_Init();
+  MX_I2C1_Init();
+  MX_LPTIM1_Init();
   /* USER CODE BEGIN 2 */
   PWM_LPTIM1_Init();
   COUNT_LPTIM2_IT_Init();
@@ -108,7 +112,6 @@ int main(void)
 
   /* Init code for STM32_WPAN */
   MX_APPE_Init();
-
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
