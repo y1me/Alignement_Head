@@ -93,7 +93,7 @@ enum {
 
 /* USER CODE END Private defines */
 
-void MX_I2C1_Init(void);
+//void MX_I2C1_Init(void);
 
 /* USER CODE BEGIN Prototypes */
 

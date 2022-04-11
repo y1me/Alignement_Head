@@ -19,6 +19,7 @@
 /* USER CODE END Header */
 /* Includes ------------------------------------------------------------------*/
 #include "i2c.h"
+#include "Utils/Commons.h"
 
 /* USER CODE BEGIN 0 */
 
@@ -106,7 +107,7 @@ DMA_HandleTypeDef hdma_i2c1_rx;
 DMA_HandleTypeDef hdma_i2c1_tx;
 
 /* I2C1 init function */
-void MX_I2C1_Init(void)
+void MX_I2C1_Init(i2cFunctionParam_t* data)
 {
 
   /* USER CODE BEGIN I2C1_Init 0 */

@@ -30,6 +30,8 @@
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 #include <stdio.h>
+#include "Utils/Commons.h"
+#include "Utils/types.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -50,9 +52,10 @@
 
 /* USER CODE BEGIN PV */
 /* Buffer used for transmission */
-uint8_t aTxBuffer[8] = { 0x01,  };
+uint8_t aTxBuffer1[1] = { 0x01  };
+
 /* Buffer used for reception */
-uint8_t aRxBuffer[8]= { 0, 0, 0 };
+uint8_t aRxBuffer1[3]= { 0, 0, 0 };
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -106,21 +109,20 @@ int main(void)
   MX_RTC_Init();
   MX_DMA_Init();
   MX_LPTIM2_Init();
-  MX_I2C1_Init();
   MX_LPTIM1_Init();
   /* USER CODE BEGIN 2 */
   while(1);
   //i2c_params_data.i2cHandle = &hi2c1;
   while (i2c_params_data.event != EV_I2C_INIT_DONE);
-  i2c_params_data.bufferTx = aTxBuffer;
-  i2c_params_data.bufferRx = aRxBuffer;
+  i2c_params_data.bufferTx = aTxBuffer1;
+  i2c_params_data.bufferRx = aRxBuffer1;
   i2c_params_data.sizeTx = 1;
   i2c_params_data.sizeRx = 2;
   i2c_params_data.address = 0x49;
   i2c_params_data.event = EV_I2C_DMA_TX_RX;
 
   //I2C_DMA_TX(&i2c_params_data);
-  //I2C_DMA_RX(&hi2c1, 0x49, aRxBuffer, 3);
+  //I2C_DMA_RX(&hi2c1, 0x49, aRxBuffer11, 3);
   /* USER CODE END 2 */
 
   /* Init code for STM32_WPAN */
@@ -136,11 +138,11 @@ int main(void)
   }
   //while(1);
 
-  aTxBuffer[0] = 0x02;
-  aTxBuffer[1] = 0x00;
-  aTxBuffer[2] = 0x00;
-  i2c_params_data.bufferTx = aTxBuffer;
-  i2c_params_data.bufferRx = aRxBuffer;
+  aTxBuffer1[0] = 0x02;
+  aTxBuffer1[1] = 0x00;
+  aTxBuffer1[2] = 0x00;
+  i2c_params_data.bufferTx = aTxBuffer1;
+  i2c_params_data.bufferRx = aRxBuffer1;
   i2c_params_data.sizeTx = 3;
   i2c_params_data.sizeRx = 2;
   i2c_params_data.address = 0x49;
@@ -151,11 +153,11 @@ int main(void)
   	  i++;
     }
 
-  aTxBuffer[0] = 0x03;
-  aTxBuffer[1] = 0x80;
-  aTxBuffer[2] = 0x00;
-  i2c_params_data.bufferTx = aTxBuffer;
-  i2c_params_data.bufferRx = aRxBuffer;
+  aTxBuffer1[0] = 0x03;
+  aTxBuffer1[1] = 0x80;
+  aTxBuffer1[2] = 0x00;
+  i2c_params_data.bufferTx = aTxBuffer1;
+  i2c_params_data.bufferRx = aRxBuffer1;
   i2c_params_data.sizeTx = 3;
   i2c_params_data.sizeRx = 2;
   i2c_params_data.address = 0x49;
@@ -167,9 +169,9 @@ int main(void)
     }
   while(1)
   {
-	  aTxBuffer[0] = 0x00;
-	  i2c_params_data.bufferTx = aTxBuffer;
-	  i2c_params_data.bufferRx = aRxBuffer;
+	  aTxBuffer1[0] = 0x00;
+	  i2c_params_data.bufferTx = aTxBuffer1;
+	  i2c_params_data.bufferRx = aRxBuffer1;
 	  i2c_params_data.sizeTx = 1;
 	  i2c_params_data.sizeRx = 2;
 	  i2c_params_data.address = 0x49;
@@ -179,7 +181,7 @@ int main(void)
 	    {
 	  	  i++;
 	    }
-	  aTxBuffer[0] = 0x01;
+	  aTxBuffer1[0] = 0x01;
     /* USER CODE END WHILE */
     MX_APPE_Process();
 

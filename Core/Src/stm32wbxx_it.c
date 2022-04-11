@@ -73,7 +73,7 @@ static PFV_EXTI pf_ext_int[]=
 				NULL,
 				conv_ready,
 				NULL,
-				TOGGLE_GPIO_LED2,
+				NULL,//TOGGLE_GPIO_LED2,
 				NULL,
 				NULL,
 				NULL,
