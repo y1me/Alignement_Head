@@ -46,7 +46,7 @@
 
 /* Private variables ---------------------------------------------------------*/
 /* USER CODE BEGIN PV */
-
+volatile uint32_t tick_10us = 0, tick_ms = 0, tick_second = 0;
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -66,6 +66,19 @@ extern I2C_HandleTypeDef hi2c1;
 extern IPCC_HandleTypeDef hipcc;
 extern LPTIM_HandleTypeDef hlptim2;
 /* USER CODE BEGIN EV */
+/* Add following code in ext interupt handler
+ *
+ *	if (LL_EXTI_IsActiveFlag_0_31(LL_EXTI_LINE_4) != RESET)
+ *	{
+ *	  LL_EXTI_ClearFlag_0_31(LL_EXTI_LINE_4);
+ *			if (pf_ext_int[4]  != NULL)
+ *			{
+ *				(* pf_ext_int[4])();
+ *			}
+ *	}
+ *
+ */
+/* USER CODE BEGIN EXTI4_IRQn 1 */
 static PFV_EXTI pf_ext_int[]=
 		{
 				NULL,
@@ -81,7 +94,24 @@ static PFV_EXTI pf_ext_int[]=
 				NULL
 		};
 
-//pf_ext_int[5] = TOGGLE_GPIO_LED2;
+static const TIMED_PERIOD timed_task_second[] =
+{
+    { 1,  TOGGLE_GPIO_TEST_PIN },
+    { 0, NULL }
+};
+
+static const TIMED_PERIOD timed_task_ms[] =
+{
+    { 4, Running_ADS115_StateMachine_Iteration },
+    { 0, NULL }
+};
+
+static const TIMED_PERIOD timed_task_10us[] =
+{
+    { 50, Running_I2C_StateMachine_Iteration },
+    { 0, NULL }
+};
+
 /* USER CODE END EV */
 
 /******************************************************************************/
@@ -207,13 +237,42 @@ void PendSV_Handler(void)
 void SysTick_Handler(void)
 {
   /* USER CODE BEGIN SysTick_IRQn 0 */
-	static int8_t count;
+
+	//TOGGLE_GPIO_TEST_PIN();
+	//TIMED_PERIOD *ptr;
+	tick_ms++;
+
+	if (tick_ms == 1000)
+	{
+		tick_ms = 0;
+		tick_second++;
+
+		for (const TIMED_PERIOD *ptr = timed_task_second; ptr->interval != 0; ptr++)
+		{
+			if (!(tick_second % ptr->interval))
+			{
+				/* Time to call the function */
+				(ptr->proc)();
+			}
+		}
+	}
+
+	if (tick_second == 60)
+	{
+		tick_second = 0;
+	}
+
+	for (const TIMED_PERIOD *ptr = timed_task_ms; ptr->interval != 0; ptr++)
+	{
+		if (!(tick_ms % ptr->interval))
+		{
+			/* Time to call the function */
+			(ptr->proc)();
+		}
+	}
   /* USER CODE END SysTick_IRQn 0 */
-  HAL_IncTick();
   /* USER CODE BEGIN SysTick_IRQn 1 */
 
-	Running_I2C_StateMachine_Iteration();
-	Running_ADS115_StateMachine_Iteration();
 
   /* USER CODE END SysTick_IRQn 1 */
 }
@@ -370,6 +429,24 @@ void LPTIM2_IRQHandler(void)
   /* USER CODE END LPTIM2_IRQn 0 */
   HAL_LPTIM_IRQHandler(&hlptim2);
   /* USER CODE BEGIN LPTIM2_IRQn 1 */
+
+	//TOGGLE_GPIO_TEST_PIN();
+	//TIMED_PERIOD *ptr
+  tick_10us++;
+
+  if (tick_10us == 100)
+  {
+	  tick_10us = 0;
+  }
+
+  for (const TIMED_PERIOD *ptr = timed_task_10us; ptr->interval != 0; ptr++)
+  {
+	  if (!(tick_10us % ptr->interval))
+	  {
+		  /* Time to call the function */
+		  (ptr->proc)();
+	  }
+  }
 
   /* USER CODE END LPTIM2_IRQn 1 */
 }
