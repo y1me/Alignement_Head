@@ -6,12 +6,13 @@
   ******************************************************************************
   * @attention
   *
-  * Copyright (c) 2022 STMicroelectronics.
-  * All rights reserved.
+  * <h2><center>&copy; Copyright (c) 2021 STMicroelectronics.
+  * All rights reserved.</center></h2>
   *
-  * This software is licensed under terms that can be found in the LICENSE file
-  * in the root directory of this software component.
-  * If no LICENSE file comes with this software, it is provided AS-IS.
+  * This software component is licensed by ST under BSD 3-Clause license,
+  * the "License"; You may not use this file except in compliance with the
+  * License. You may obtain a copy of the License at:
+  *                        opensource.org/licenses/BSD-3-Clause
   *
   ******************************************************************************
   */
@@ -23,8 +24,9 @@
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 #include "gpio.h"
+#include "i2c.h"
 #include "stddef.h"
-#include "types.h"
+#include "periph/ads101x.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -44,7 +46,7 @@
 
 /* Private variables ---------------------------------------------------------*/
 /* USER CODE BEGIN PV */
-volatile uint32_t tick_10us = 0, tick_ms = 0, tick_second = 0;
+
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -58,31 +60,18 @@ volatile uint32_t tick_10us = 0, tick_ms = 0, tick_second = 0;
 /* USER CODE END 0 */
 
 /* External variables --------------------------------------------------------*/
+extern DMA_HandleTypeDef hdma_i2c1_rx;
+extern DMA_HandleTypeDef hdma_i2c1_tx;
+extern I2C_HandleTypeDef hi2c1;
 extern IPCC_HandleTypeDef hipcc;
 extern LPTIM_HandleTypeDef hlptim2;
 /* USER CODE BEGIN EV */
-
-/* Add following code in ext interupt handler
- *
- *	if (LL_EXTI_IsActiveFlag_0_31(LL_EXTI_LINE_4) != RESET)
- *	{
- *	  LL_EXTI_ClearFlag_0_31(LL_EXTI_LINE_4);
- *			if (pf_ext_int[4]  != NULL)
- *			{
- *				(* pf_ext_int[4])();
- *			}
- *	}
- *
- */
-/* USER CODE BEGIN EXTI4_IRQn 1 */
-
-// add function address
 static PFV_EXTI pf_ext_int[]=
 		{
 				NULL,
 				NULL,
 				NULL,
-				NULL,
+				conv_ready,
 				NULL,
 				NULL,//TOGGLE_GPIO_LED2,
 				NULL,
@@ -92,25 +81,7 @@ static PFV_EXTI pf_ext_int[]=
 				NULL
 		};
 
-static const TIMED_PERIOD timed_task_second[] =
-{
-    { 1,  TOGGLE_GPIO_TEST_PIN },
-    { 0, NULL }
-};
-
-static const TIMED_PERIOD timed_task_ms[] =
-{
-    //{ 4,  TOGGLE_GPIO_TEST_PIN },
-    { 0, NULL }
-};
-
-static const TIMED_PERIOD timed_task_10us[] =
-{
-    //{ 50,  TOGGLE_GPIO_TEST_PIN },
-    { 0, NULL }
-};
-
-
+//pf_ext_int[5] = TOGGLE_GPIO_LED2;
 /* USER CODE END EV */
 
 /******************************************************************************/
@@ -236,47 +207,13 @@ void PendSV_Handler(void)
 void SysTick_Handler(void)
 {
   /* USER CODE BEGIN SysTick_IRQn 0 */
-
-	//TOGGLE_GPIO_TEST_PIN();
-	//TIMED_PERIOD *ptr;
-	tick_ms++;
-
-	if (tick_ms == 1000)
-	{
-		tick_ms = 0;
-		tick_second++;
-
-		for (const TIMED_PERIOD *ptr = timed_task_second; ptr->interval != 0; ptr++)
-		{
-			if (!(tick_second % ptr->interval))
-			{
-				/* Time to call the function */
-				(ptr->proc)();
-			}
-		}
-	}
-
-	if (tick_second == 60)
-	{
-		tick_second = 0;
-	}
-
-	for (const TIMED_PERIOD *ptr = timed_task_ms; ptr->interval != 0; ptr++)
-	{
-		if (!(tick_ms % ptr->interval))
-		{
-			/* Time to call the function */
-			(ptr->proc)();
-		}
-	}
-
-
-
-	//TOGGLE_GPIO_TEST_PIN();
-
+	static int8_t count;
   /* USER CODE END SysTick_IRQn 0 */
   HAL_IncTick();
   /* USER CODE BEGIN SysTick_IRQn 1 */
+
+	Running_I2C_StateMachine_Iteration();
+	Running_ADS115_StateMachine_Iteration();
 
   /* USER CODE END SysTick_IRQn 1 */
 }
@@ -302,6 +239,35 @@ void RCC_IRQHandler(void)
 }
 
 /**
+  * @brief This function handles DMA1 channel1 global interrupt.
+  */
+void DMA1_Channel1_IRQHandler(void)
+{
+  /* USER CODE BEGIN DMA1_Channel1_IRQn 0 */
+
+  /* USER CODE END DMA1_Channel1_IRQn 0 */
+  HAL_DMA_IRQHandler(&hdma_i2c1_rx);
+  /* USER CODE BEGIN DMA1_Channel1_IRQn 1 */
+	I2C_RX_TX_DMA_ACK();
+
+  /* USER CODE END DMA1_Channel1_IRQn 1 */
+}
+
+/**
+  * @brief This function handles DMA1 channel2 global interrupt.
+  */
+void DMA1_Channel2_IRQHandler(void)
+{
+  /* USER CODE BEGIN DMA1_Channel2_IRQn 0 */
+
+  /* USER CODE END DMA1_Channel2_IRQn 0 */
+  HAL_DMA_IRQHandler(&hdma_i2c1_tx);
+  /* USER CODE BEGIN DMA1_Channel2_IRQn 1 */
+	I2C_RX_TX_DMA_ACK();
+  /* USER CODE END DMA1_Channel2_IRQn 1 */
+}
+
+/**
   * @brief This function handles EXTI line[9:5] interrupts.
   */
 void EXTI9_5_IRQHandler(void)
@@ -322,6 +288,34 @@ void EXTI9_5_IRQHandler(void)
   /* USER CODE BEGIN EXTI9_5_IRQn 1 */
 
   /* USER CODE END EXTI9_5_IRQn 1 */
+}
+
+/**
+  * @brief This function handles I2C1 event interrupt.
+  */
+void I2C1_EV_IRQHandler(void)
+{
+  /* USER CODE BEGIN I2C1_EV_IRQn 0 */
+
+  /* USER CODE END I2C1_EV_IRQn 0 */
+  HAL_I2C_EV_IRQHandler(&hi2c1);
+  /* USER CODE BEGIN I2C1_EV_IRQn 1 */
+
+  /* USER CODE END I2C1_EV_IRQn 1 */
+}
+
+/**
+  * @brief This function handles I2C1 error interrupt.
+  */
+void I2C1_ER_IRQHandler(void)
+{
+  /* USER CODE BEGIN I2C1_ER_IRQn 0 */
+
+  /* USER CODE END I2C1_ER_IRQn 0 */
+  HAL_I2C_ER_IRQHandler(&hi2c1);
+  /* USER CODE BEGIN I2C1_ER_IRQn 1 */
+
+  /* USER CODE END I2C1_ER_IRQn 1 */
 }
 
 /**
@@ -377,24 +371,7 @@ void LPTIM2_IRQHandler(void)
   HAL_LPTIM_IRQHandler(&hlptim2);
   /* USER CODE BEGIN LPTIM2_IRQn 1 */
 
-	//TOGGLE_GPIO_TEST_PIN();
-	//TIMED_PERIOD *ptr
-  tick_10us++;
-
-  if (tick_10us == 100)
-  {
-	  tick_10us = 0;
-  }
-
-  for (const TIMED_PERIOD *ptr = timed_task_10us; ptr->interval != 0; ptr++)
-  {
-	  if (!(tick_10us % ptr->interval))
-	  {
-		  /* Time to call the function */
-		  (ptr->proc)();
-	  }
-  }
-/* USER CODE END LPTIM2_IRQn 1 */
+  /* USER CODE END LPTIM2_IRQn 1 */
 }
 
 /* USER CODE BEGIN 1 */

@@ -6,18 +6,21 @@
   ******************************************************************************
   * @attention
   *
-  * Copyright (c) 2022 STMicroelectronics.
-  * All rights reserved.
+  * <h2><center>&copy; Copyright (c) 2021 STMicroelectronics.
+  * All rights reserved.</center></h2>
   *
-  * This software is licensed under terms that can be found in the LICENSE file
-  * in the root directory of this software component.
-  * If no LICENSE file comes with this software, it is provided AS-IS.
+  * This software component is licensed by ST under BSD 3-Clause license,
+  * the "License"; You may not use this file except in compliance with the
+  * License. You may obtain a copy of the License at:
+  *                        opensource.org/licenses/BSD-3-Clause
   *
   ******************************************************************************
   */
 /* USER CODE END Header */
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
+#include "dma.h"
+#include "i2c.h"
 #include "ipcc.h"
 #include "lptim.h"
 #include "rf.h"
@@ -26,7 +29,9 @@
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
-
+#include <stdio.h>
+#include "Utils/Commons.h"
+#include "Utils/types.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -46,7 +51,11 @@
 /* Private variables ---------------------------------------------------------*/
 
 /* USER CODE BEGIN PV */
+/* Buffer used for transmission */
+uint8_t aTxBuffer1[1] = { 0x01  };
 
+/* Buffer used for reception */
+uint8_t aRxBuffer1[3]= { 0, 0, 0 };
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -79,7 +88,6 @@ int main(void)
   MX_APPE_Config();
 
   /* USER CODE BEGIN Init */
-
   /* USER CODE END Init */
 
   /* Configure the system clock */
@@ -99,21 +107,81 @@ int main(void)
   MX_GPIO_Init();
   MX_RF_Init();
   MX_RTC_Init();
-  MX_LPTIM1_Init();
+  MX_DMA_Init();
   MX_LPTIM2_Init();
+  MX_LPTIM1_Init();
   /* USER CODE BEGIN 2 */
-  PWM_LPTIM1_Init();
-  COUNT_LPTIM2_IT_Init();
+  while(1);
+  //i2c_params_data.i2cHandle = &hi2c1;
+  while (i2c_params_data.event != EV_I2C_INIT_DONE);
+  i2c_params_data.bufferTx = aTxBuffer1;
+  i2c_params_data.bufferRx = aRxBuffer1;
+  i2c_params_data.sizeTx = 1;
+  i2c_params_data.sizeRx = 2;
+  i2c_params_data.address = 0x49;
+  i2c_params_data.event = EV_I2C_DMA_TX_RX;
+
+  //I2C_DMA_TX(&i2c_params_data);
+  //I2C_DMA_RX(&hi2c1, 0x49, aRxBuffer11, 3);
   /* USER CODE END 2 */
 
   /* Init code for STM32_WPAN */
   MX_APPE_Init();
 
-
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
-  while (1)
+  //printf("Program start \n");
+  u32 i = 0;
+  while ( i2c_params_data.event != EV_I2C_DMA_RX_DONE || i2c_params_data.currState != ST_I2C_IDLE )
   {
+	  i++;
+  }
+  //while(1);
+
+  aTxBuffer1[0] = 0x02;
+  aTxBuffer1[1] = 0x00;
+  aTxBuffer1[2] = 0x00;
+  i2c_params_data.bufferTx = aTxBuffer1;
+  i2c_params_data.bufferRx = aRxBuffer1;
+  i2c_params_data.sizeTx = 3;
+  i2c_params_data.sizeRx = 2;
+  i2c_params_data.address = 0x49;
+  i2c_params_data.event = EV_I2C_DMA_TX_RX;
+  i=0;
+  while (i2c_params_data.event != EV_I2C_DMA_RX_DONE || i2c_params_data.currState != ST_I2C_IDLE )
+    {
+  	  i++;
+    }
+
+  aTxBuffer1[0] = 0x03;
+  aTxBuffer1[1] = 0x80;
+  aTxBuffer1[2] = 0x00;
+  i2c_params_data.bufferTx = aTxBuffer1;
+  i2c_params_data.bufferRx = aRxBuffer1;
+  i2c_params_data.sizeTx = 3;
+  i2c_params_data.sizeRx = 2;
+  i2c_params_data.address = 0x49;
+  i2c_params_data.event = EV_I2C_DMA_TX_RX;
+  i=0;
+  while (i2c_params_data.event != EV_I2C_DMA_RX_DONE || i2c_params_data.currState != ST_I2C_IDLE )
+    {
+  	  i++;
+    }
+  while(1)
+  {
+	  aTxBuffer1[0] = 0x00;
+	  i2c_params_data.bufferTx = aTxBuffer1;
+	  i2c_params_data.bufferRx = aRxBuffer1;
+	  i2c_params_data.sizeTx = 1;
+	  i2c_params_data.sizeRx = 2;
+	  i2c_params_data.address = 0x49;
+	  i2c_params_data.event = EV_I2C_DMA_TX_RX;
+	  i=0;
+	  while (i2c_params_data.event != EV_I2C_DMA_RX_DONE || i2c_params_data.currState != ST_I2C_IDLE )
+	    {
+	  	  i++;
+	    }
+	  aTxBuffer1[0] = 0x01;
     /* USER CODE END WHILE */
     MX_APPE_Process();
 
