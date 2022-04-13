@@ -108,7 +108,7 @@ static const TIMED_PERIOD timed_task_ms[] =
 
 static const TIMED_PERIOD timed_task_10us[] =
 {
-    { 50, Running_I2C_StateMachine_Iteration },
+    { 10, Running_I2C_StateMachine_Iteration },
     { 0, NULL }
 };
 

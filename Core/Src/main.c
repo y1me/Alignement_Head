@@ -111,7 +111,9 @@ int main(void)
   MX_LPTIM2_Init();
   MX_LPTIM1_Init();
   /* USER CODE BEGIN 2 */
-  while(1);
+  PWM_LPTIM1_Init();
+  COUNT_LPTIM2_IT_Init();
+
   //i2c_params_data.i2cHandle = &hi2c1;
   while (i2c_params_data.event != EV_I2C_INIT_DONE);
   i2c_params_data.bufferTx = aTxBuffer1;
